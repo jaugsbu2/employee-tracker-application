@@ -1,4 +1,29 @@
+const express = require('express');
 const inquirer = require("inquirer");
+const mysql = require("mysql2");
+
+const PORT = process.env.PORT || 3001;
+const app = express();
+
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+
+const db = mysql.createConnection(
+    {
+      host: "127.0.0.1",
+      user: "root",
+      password: "STPassW0rd",
+      database: "employees_db",
+    },
+    console.log(`Connected to the employees_db database.`)
+  );
+
+function viewDeparments() {
+  const sql = 'SELECT id, name AS department FROM departments'
+  db.query(sql, (err, results) => {
+      console.table (results)
+    });
+}
 
 function start() {
   inquirer
@@ -19,7 +44,7 @@ function start() {
       },
     ])
     .then((val) => {
-      switch (val) {
+      switch (val.choice) {
         case "View all departments":
           viewDeparments();
           break;
@@ -45,4 +70,4 @@ function start() {
     });
 }
 
-start()
+start();
