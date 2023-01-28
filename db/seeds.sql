@@ -10,9 +10,9 @@ VALUES ("Mechanical Engineer", 60000, 1),
     ("Manager", 100000, 1),
     ("Developer", 70000, 1);
 
-INSERT INTO employee (id, first_name, last_name, role_id, manager_id)
-VALUES (123, "first1", "last1", 1, 234),
-(234, "first2", "last2", 4, NULL),
-(345, "first3", "last3", 2, NULL),
-(456, "first4", "last4", 3, 234),
-(567, "first5", "last5", 5, 234);
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+VALUES ("first1", "last1", 1, 2),
+("first2", "last2", 4, NULL),
+("first3", "last3", 2, NULL),
+("first4", "last4", 3, 2),
+("first5", "last5", 5, 3);
