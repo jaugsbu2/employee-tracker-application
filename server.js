@@ -77,6 +77,7 @@ function addDepartment(body) {
   return new Promise(function (resolve, reject) {
     const params = [body.department_name];
     const sql = `INSERT INTO departments (name) VALUES (?)`;
+    console.log(params)
     db.query(sql, params, (err, results) => {
       if (err) {
         console.log(err);
@@ -91,8 +92,8 @@ function addDepartment(body) {
 function addRole(body, department_id) {
   return new Promise(function (resolve, reject) {
     const params = [body.title, body.salary, department_id];
-    const sql = `INSERT INTO roles (title, salary, department_id) VALUES (?)`;
-    db.query(sql, params, (err, results) => {
+    const sql = `INSERT INTO roles (title, salary, department_id) VALUES ("${body.title}", ${body.salary}, ${department_id})`;
+    db.query(sql, (err, results) => {
       if (err) {
         console.log(err);
       }
@@ -140,16 +141,16 @@ function promptAddrole(departments) {
   .then((val) => {
     if (val) {
       getDepartments().then ((departments) => {
-        console.log(departments)
+
         const departmentNames = [];
          for (i = 0; i < departments.length; i++) {
          departmentNames.push(departments[i].department);
          }
 
         const department_id = departmentNames.indexOf(val.department_name);
-        if (department_id !== -1) {
-        console.log(department_id);
-        addRole(val, department_id)
+        const departmentId = department_id + 1
+        if (departmentId !== 0) {
+        addRole(val, departmentId)
         .then(() => {
           startOver();
         });
@@ -200,7 +201,6 @@ function start() {
         case "Add a role":
           getDepartments()
             .then((departments) => {
-              console.log(departments)
               promptAddrole(departments);
             })
           break;
