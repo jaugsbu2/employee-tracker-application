@@ -32,7 +32,7 @@ function viewDeparments() {
 
 function viewRoles() {
   return new Promise(function (resolve, reject) {
-    const sql = "SELECT id, title, salary, department_id FROM roles";
+    const sql = "SELECT roles.id AS Role_Id, roles.title, roles.salary, departments.name AS Department_Name FROM roles JOIN departments ON roles.department_id = departments.id";
     db.query(sql, (err, results) => {
       if (results) {
         const table = console.table(results);
