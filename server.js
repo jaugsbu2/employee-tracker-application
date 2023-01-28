@@ -8,6 +8,7 @@ const app = express();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+// connect to employees database
 const db = mysql.createConnection(
   {
     host: "127.0.0.1",
@@ -18,6 +19,7 @@ const db = mysql.createConnection(
   console.log(`Connected to the employees_db database.`)
 );
 
+// Database queries
 function viewDeparments() {
   return new Promise(function (resolve, reject) {
     const sql = "SELECT id, name AS department FROM departments";
@@ -55,29 +57,10 @@ function viewEmployees() {
   });
 }
 
-function promptAdddepartment() {
-  inquirer
-    .prompt([
-      {
-        type: "entry",
-        name: "department_name",
-        message: "Enter the name of your new department.",
-      },
-    ])
-    .then((val) => {
-      if (val) {
-        addDepartment(val).then(() => {
-          startOver();
-        });
-      }
-    });
-}
-
 function addDepartment(body) {
   return new Promise(function (resolve, reject) {
     const params = [body.department_name];
     const sql = `INSERT INTO departments (name) VALUES (?)`;
-    console.log(params);
     db.query(sql, params, (err, results) => {
       if (err) {
         console.log(err);
@@ -196,6 +179,26 @@ function updateEmployee(body, employeesAndroles) {
       );
     });
   });
+}
+
+// Inquirer Prompts
+
+function promptAdddepartment() {
+  inquirer
+    .prompt([
+      {
+        type: "entry",
+        name: "department_name",
+        message: "Enter the name of your new department.",
+      },
+    ])
+    .then((val) => {
+      if (val) {
+        addDepartment(val).then(() => {
+          startOver();
+        });
+      }
+    });
 }
 
 function promptAddrole(departments) {
