@@ -66,72 +66,98 @@ function promptAdddepartment() {
     ])
     .then((val) => {
       if (val) {
-        addDepartment(val)
-        .then(() => {
+        addDepartment(val).then(() => {
           startOver();
-        })
+        });
       }
     });
 }
 
 function addDepartment(body) {
   return new Promise(function (resolve, reject) {
-  const params = [body.department_name];
-  const sql = `INSERT INTO departments (name) VALUES (?)`;
+    const params = [body.department_name];
+    const sql = `INSERT INTO departments (name) VALUES (?)`;
     db.query(sql, params, (err, results) => {
       if (err) {
-        console.log(err)
+        console.log(err);
       }
-      resolve (console.log(`${body.department_name} has been successfully added!`));
+      resolve(
+        console.log(`${body.department_name} has been successfully added!`)
+      );
     });
-  })
+  });
 }
 
-// function addDepartment(body) {
-//   const sql = `INSERT INTO departments (name) VALUES(${body.department_name})`;
-//   const params = [body.department_name];
-//   db.query(sql, (err, results) => {
-//     if (err) {
-//       console.log(`Could not add ${body}`);
-//       res.status(400).json({ error: err.message });
-//       // return;
-//     }
-//     res.json({
-//       message: "success",
-//       data: body,
-//     });
-//   });
-// }
+function addRole(body, department_id) {
+  return new Promise(function (resolve, reject) {
+    const params = [body.title, body.salary, department_id];
+    const sql = `INSERT INTO roles (title, salary, department_id) VALUES (?)`;
+    db.query(sql, params, (err, results) => {
+      if (err) {
+        console.log(err);
+      }
+      resolve(console.log(`${body.title} has been successfully added!`));
+    });
+  });
+}
 
-// function promptAddrole() {
-//   const departmentChoice =
-//   inquirer
-// .prompt([
-//   {
-//   type: "entry",
-//   name: "title",
-//   message: "Enter the name of your new role."
-// },
-// {
-//   type: "entry",
-//   name: "salary",
-//   message: "Enter the salary of your new role."
-// },
-// {
-//   type: "entry",
-//   name: "department_id",
-//   message: "What department is this role in?",
-//   choices: [
+function getDepartments() {
+  return new Promise(function (resolve, reject) {
+    const sql = "SELECT id, name AS department FROM departments";
+    db.query(sql, (err, results) => {
+      if (results) {
+        const departments = results;
+        resolve(departments);
+      }
+    });
+  });
+}
 
-//   ]
-// },
-// ])
-// .then(val => {
-//   if (val) {
-//     addDepartment(val)
-//   }
-// })
-// }
+function promptAddrole(departments) {
+  const departmentNames = [];
+  for (i = 0; i < departments.length; i++) {
+    departmentNames.push(departments[i].department);
+  }
+
+  inquirer.prompt([
+    {
+      type: "entry",
+      name: "title",
+      message: "Enter the name of your new role.",
+    },
+    {
+      type: "entry",
+      name: "salary",
+      message: "Enter the salary of your new role.",
+    },
+    {
+      type: "list",
+      name: "department_name",
+      message: "What department is this role in?",
+      choices: departmentNames,
+    },
+  ])
+  .then((val) => {
+    if (val) {
+      getDepartments().then ((departments) => {
+        console.log(departments)
+        const departmentNames = [];
+         for (i = 0; i < departments.length; i++) {
+         departmentNames.push(departments[i].department);
+         }
+
+        const department_id = departmentNames.indexOf(val.department_name);
+        if (department_id !== -1) {
+        console.log(department_id);
+        addRole(val, department_id)
+        .then(() => {
+          startOver();
+        });
+      }
+    })
+    }
+  });
+}
 
 function start() {
   inquirer
@@ -172,7 +198,11 @@ function start() {
           promptAdddepartment();
           break;
         case "Add a role":
-          getDepartments();
+          getDepartments()
+            .then((departments) => {
+              console.log(departments)
+              promptAddrole(departments);
+            })
           break;
         case "Add an Employee":
           promptAddemployee();
