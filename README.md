@@ -4,7 +4,7 @@
 
   ## Description
 
-  This is a business employee tracker. It uses a relational mysql database to store information about business departments, roles, and employees. It uses inquirer to see and enter information. 
+  This is a business employee tracker. It uses a relational mysql database to store information about business departments, roles, and employees. It uses inquirer to see and enter information. This link shows a video walkthrough: https://watch.screencastify.com/v/v8h3cOA8Tu4YWo55elrx
 
   ## Table of Contents
   
